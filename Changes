@@ -1,0 +1,6 @@
+Revision history for Perl extension WWW::Translate::Apertium
+
+0.01  March 26, 2007
+	
+    * First version, based on WWW::Translate::interNOSTRUM.
+
