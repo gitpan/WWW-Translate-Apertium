@@ -1,5 +1,10 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.02  May 3, 2007
+    
+    * META.yml conforms to spec 1.0.
+    * Added the get_pairs() method and updated the documentation.
+
 0.01  March 26, 2007
 	
     * First version, based on WWW::Translate::interNOSTRUM.

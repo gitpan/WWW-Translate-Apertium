@@ -7,7 +7,7 @@ use WWW::Mechanize;
 use Encode;
 
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 my %lang_pairs = (
@@ -190,6 +190,12 @@ sub get_unknown {
     }
 }
 
+sub get_pairs {
+    my $self = shift;
+    
+    return %lang_pairs;
+}
+
 sub _message {
     my ($key, $value) = @_;
     
@@ -221,7 +227,7 @@ WWW::Translate::Apertium - Open source machine translation
 
 =head1 VERSION
 
-Version 0.01 March 26, 2007
+Version 0.02 May 3, 2007
 
 
 =head1 SYNOPSIS
@@ -238,6 +244,9 @@ Version 0.01 March 26, 2007
     
     # check current language pair:
     my $current_langpair = $engine->from_into();
+    
+    # get available language pairs:
+    my %pairs = $engine->get_pairs();
     
     # default output format is 'plain_text'
     # change to 'marked_text':
@@ -429,6 +438,12 @@ In case the server is down, it will show a warning and return C<undef>.
 Changes the engine language pair to $lang_pair.
 When called with no argument, it returns the value of the current engine
 language pair.
+
+=head2 $engine->get_pairs()
+
+Returns a hash containing the available language pairs.
+The hash keys are the language codes, and the values are the corresponding
+language names.
 
 =head2 $engine->output_format($format)
 
