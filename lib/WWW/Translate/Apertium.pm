@@ -7,7 +7,7 @@ use WWW::Mechanize;
 use Encode;
 
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 
 my %lang_pairs = (
@@ -227,7 +227,7 @@ WWW::Translate::Apertium - Open source machine translation
 
 =head1 VERSION
 
-Version 0.02 May 3, 2007
+Version 0.03 September 20, 2007
 
 
 =head1 SYNOPSIS

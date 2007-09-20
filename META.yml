@@ -1,9 +1,9 @@
 --- #YAML:1.0
 name:                WWW-Translate-Apertium
-version:             0.02
+version:             0.03
 abstract:            Open source machine translation
-license:             ~
-generated_by:        ExtUtils::MakeMaker version 6.32
+license:             perl
+generated_by:        ExtUtils::MakeMaker version 6.36
 distribution_type:   module
 requires:     
     WWW::Mechanize:                1.2
