@@ -1,5 +1,9 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.05  September 30, 2007
+    
+    * Minor code and POD fixes and improvements.
+    
 0.04  September 30, 2007
 
     * Fixed a bug that prevented the module to work properly since the last
