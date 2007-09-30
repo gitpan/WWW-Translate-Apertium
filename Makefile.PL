@@ -5,7 +5,7 @@ WriteMakefile(
     NAME              => 'WWW::Translate::Apertium',
     VERSION_FROM      => 'lib/WWW/Translate/Apertium.pm', # finds $VERSION
     PREREQ_PM         => {
-                          'WWW::Mechanize' => 1.20,
+                          'LWP::UserAgent' => 0,
                          },
     LICENSE           => 'perl',
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005

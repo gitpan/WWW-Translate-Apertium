@@ -1,5 +1,13 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.04  September 30, 2007
+
+    * Fixed a bug that prevented the module to work properly since the last
+      update of the Apertium online test drive.
+      In order to do so, switched from WWW::Mechanize to LWP::UserAgent.
+      Changed the code to adapt it to the new output encoding, utf-8.
+      Updated Makefile.PL and the documentation accordingly.
+
 0.03  September 20, 2007
 
     * Edited Makefile.PL to include the license field in META.yml
