@@ -4,26 +4,41 @@ use strict;
 use warnings;
 use Carp qw(carp);
 use LWP::UserAgent;
+use URI::Escape;
 use Encode;
 
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 
 my %lang_pairs = (
-                    'es-ca' => 'Spanish -> Catalan', # Default
-                    'ca-es' => 'Catalan -> Spanish',
-                    'es-gl' => 'Spanish -> Galician',
-                    'gl-es' => 'Galician -> Spanish',
-                    'es-pt' => 'Spanish -> Portuguese',
-                    'pt-es' => 'Portuguese -> Spanish',
-                    'es-br' => 'Spanish -> Brazilian Portuguese',
-                    'oc-ca' => 'Aranese -> Catalan',
-                    'ca-oc' => 'Catalan -> Aranese',
-                    'fr-ca' => 'French -> Catalan',
-                    'ca-fr' => 'Catalan -> French',
-                    'en-ca' => 'English -> Catalan',
-                    'ca-en' => 'Catalan -> English',
+                    'es-ca'      => 'Spanish -> Catalan', # Default
+                    'ca-es'      => 'Catalan -> Spanish',
+                    'es-gl'      => 'Spanish -> Galician',
+                    'gl-es'      => 'Galician -> Spanish',
+                    'es-pt'      => 'Spanish -> Portuguese',
+                    'pt-es'      => 'Portuguese -> Spanish',
+                    'es-pt_BR'   => 'Spanish -> Brazilian Portuguese',
+                    'oc-ca'      => 'Occitan -> Catalan',
+                    'ca-oc'      => 'Catalan -> Occitan',
+                    'oc_aran-ca' => 'Aranese -> Catalan',
+                    'ca-oc_aran' => 'Catalan -> Aranese',
+                    'en-ca'      => 'English -> Catalan',
+                    'ca-en'      => 'Catalan -> English',
+                    'fr-ca'      => 'French -> Catalan',
+                    'ca-fr'      => 'Catalan -> French',
+                    'fr-es'      => 'French -> Spanish',
+                    'es-fr'      => 'Spanish -> French',
+                    'ca-eo'      => 'Catalan -> Esperanto',
+                    'es-eo'      => 'Spanish -> Esperanto',
+                    'ro-es'      => 'Romanian -> Spanish',
+                    'es-en'      => 'Spanish -> English',
+                    'en-es'      => 'English -> Spanish',
+                    'cy-en'      => 'Welsh -> English',
+                    'eu-es'      => 'Basque -> Spanish',
+                    'en-gl'      => 'English -> Galician',
+                    'gl-en'      => 'Galician -> English',
+                    
                  );
 
 my %output =     (
@@ -71,9 +86,8 @@ sub new {
     }
     
     $this{agent} = LWP::UserAgent->new();
-    $this{agent}->parse_head(0);
     $this{agent}->env_proxy();
-    $this{url} = 'http://xixona.dlsi.ua.es/apertium/tradtextjs.php';
+    $this{url} = 'http://xixona.dlsi.ua.es/webservice/ws.php';
     
     return bless(\%this, $class);
 }
@@ -93,23 +107,23 @@ sub translate {
     return '' if ($string eq '');
     
     $string = _fix_source($string);
+    $string = uri_escape($string);
 
     my $browser = $self->{agent};
     
-    my $marked;
-    $marked = 1 if $self->{output} eq 'marked_text';
     
     my $source_lang = substr($self->{lang_pair}, 0, 2);
     my $target_lang = substr($self->{lang_pair}, 3, 2);
     
-    my $response = $browser->post(
-                                    $self->{url},
-                                    [
-                                     'cuadrotexto' => encode('utf8', $string),
-                                     'direccion' => $self->{lang_pair},
-                                     'marcar' => $marked,
-                                    ],
-                                 );
+    my $url = "$self->{url}?mode=$self->{lang_pair}&format=txt&text=$string";
+    
+    if ($self->{output} eq 'marked_text') {
+        $url .= "&mark=1";
+    } else {
+        $url .= "&mark=0";
+    }
+    
+    my $response = $browser->get($url);
     
     unless ($response->is_success) {
         carp $response->status_line;
@@ -126,9 +140,6 @@ sub translate {
     my $translated = _fix_translated($response->{'_content'});
     
     if ($self->{output} eq 'marked_text') {
-        
-        # clean HTML tags of unknown words
-        $translated =~ s/<span .+?><a href.+?>(\*.+?)<\/a><\/span>/$1/g;
         
         if ($self->{store_unknown}) {
             
@@ -150,9 +161,15 @@ sub translate {
 sub from_into {
     my $self = shift;
     
+    
     if (@_) {
         my $pair = shift;
-        $self->{lang_pair} = $pair if exists $lang_pairs{$pair};
+        if (!exists $lang_pairs{$pair}) {
+            carp _message('lang_pair', $self->{lang_pair});
+            $self->{lang_pair} = $defaults{'lang_pair'};
+        } else {
+            $self->{lang_pair} = $pair if exists $lang_pairs{$pair};
+        }
     } else {
         return $self->{lang_pair};
     }
@@ -174,7 +191,7 @@ sub get_unknown {
     
     if (@_ && $self->{store_unknown}) {
         my $lang_code = shift;
-        if ($lang_code =~ /^(?:ca|en|es|fr|gl|oc|pt)$/) {
+        if ($lang_code =~ /^(?:ca|cy|en|es|eu|fr|gl|oc|oc_aran|pt|ro)$/) {
             return $self->{unknown}->{$lang_code};
         } else {
             carp "Invalid language code\n";
@@ -220,6 +237,9 @@ sub _fix_translated {
 
 1;
 
+
+1;
+
 __END__
 
 
@@ -230,7 +250,7 @@ WWW::Translate::Apertium - Open source machine translation
 
 =head1 VERSION
 
-Version 0.05 September 30, 2007
+Version 0.06 December 11, 2008
 
 
 =head1 SYNOPSIS
@@ -265,47 +285,83 @@ Version 0.05 September 30, 2007
                                               );
     
     # get unknown words for source language = Aranese
-    my $es_unknown_href = $engine->get_unknown('oc');
+    my $es_unknown_href = $engine->get_unknown('oc_aran');
 
 =head1 DESCRIPTION
 
 Apertium is an open source shallow-transfer machine translation engine designed
-to translate between related languages, which provides approximate translations
-between romance languages. It is being developed by the Department of Software
-and Computing Systems at the University of Alicante.
-The linguistic data is being developed by research teams from the University of
-Alicante, the University of Vigo and the Pompeu Fabra University.
+to translate between related languages (and less related languages). It is being
+developed by the Department of Software and Computing Systems at the University
+of Alicante. The linguistic data is being developed by research teams from the
+University of Alicante, the University of Vigo and the Pompeu Fabra University.
 For more details, see L<http://apertium.sourceforge.net/>.
 
 WWW::Translate::Apertium provides an object oriented interface to the Apertium
-online machine translation engine.
+online machine translation test drive, based on Apertium 3.0.
 
-The language pairs currently supported by Apertium are:
+Currently, Apertium supports the following language pairs:
 
-=over 4
-
-=item * Catalan < > Spanish
-
-=item * Galician < > Spanish
-
-=item * Spanish < > Portuguese
-
-=item * Spanish > Brazilian Portuguese
-
-=item * Aranese < > Catalan
-
-=item * Catalan < > French
-
-=back
-
-The Apertium 2.0 architecture includes improvements that support translation
-between less related languages:
+- Bidirectional
 
 =over 4
 
-=item * Catalan < > English (experimental)
+=item * Spanish  < >  Catalan
+
+=item * Spanish  < >  Galician
+
+=item * Galician < >  Spanish
+
+=item * Spanish  < >  Portuguese
+
+=item * Occitan  < >  Catalan
+
+=item * Aranese  < >  Catalan
+
+=item * English  < >  Catalan
+
+=item * French   < >  Catalan
+
+=item * French   < >  Spanish
+
+=item * Spanish  < >  English
+
+=item * English  < >  Galician
 
 =back
+
+
+- Single-direction
+
+=over 4
+
+=item * Spanish   >   Brazilian Portuguese
+
+=item * Catalan   >   Esperanto
+
+=item * Spanish   >   Esperanto
+
+=item * Romanian  >   Spanish
+
+=item * Welsh     >   English
+
+=item * Basque    >   Spanish
+
+=back
+
+
+B<NOTE>: Version 0.06 is a major update. The current module is based on the
+Apertium web service, which serves the translations faster than the previous
+web scraping approach.
+
+Summary of changes that may have an impact on legacy code:
+
+- This module expects UTF-8 text and returns UTF-8 text. You can also send
+text encoded in Latin-1, but the support for Latin-1 will be phased out soon.
+
+- Some language codes have changed: The code for Brazilian Portuguese
+is now B<pt_BR> and the code for Aranese is B<oc_aran> (used to be B<oc>, which
+is now the language code for Occitan).
+
 
 
 =head1 CONSTRUCTOR
@@ -326,57 +382,57 @@ The valid values of this parameter are:
 
 =over 8
 
-=item * C<< ca-es >>
+=item * C<< es-ca >> -- Spanish into Catalan
 
-Catalan into Spanish (default value).
+=item * C<< ca-es >> -- Catalan into Spanish
 
-=item * C<< es-ca >>
+=item * C<< es-gl >> -- Spanish into Galician
 
-Spanish into Catalan.
+=item * C<< gl-es >> -- Galician into Spanish
 
-=item * C<< es-gl >>
+=item * C<< es-pt >> -- Spanish into Portuguese
 
-Spanish into Galician.
+=item * C<< pt-es >> -- Portuguese into Spanish
 
-=item * C<< gl-es >>
+=item * C<< es-pt_BR >> -- Spanish into Brazilian Portuguese
 
-Galician into Spanish.
+=item * C<< oc-ca >> -- Occitan into Catalan
 
-=item * C<< es-pt >>
+=item * C<< ca-oc >> -- Catalan into Occitan
 
-Spanish into Portuguese.
+=item * C<< oc_aran-ca >> -- Aranese into Catalan
 
-=item * C<< pt-es >>
+=item * C<< ca-oc_aran >> -- Catalan into Aranese
 
-Portuguese into Spanish.
+=item * C<< en-ca >> -- English into Catalan
 
-=item * C<< es-br >>
+=item * C<< ca-en >> -- Catalan into English
 
-Spanish into Brazilian Portuguese.
+=item * C<< fr-ca >> -- French into Catalan
 
-=item * C<< oc-ca >>
+=item * C<< ca-fr >> -- Catalan into French
 
-Aranese into Catalan.
+=item * C<< fr-es >> -- French into Spanish
 
-=item * C<< ca-oc >>
+=item * C<< es-fr >> -- Spanish into French
 
-Catalan into Aranese.
+=item * C<< ca-eo >> -- Catalan into Esperanto
 
-=item * C<< fr-ca >>
+=item * C<< es-eo >> -- Spanish into Esperanto
 
-French into Catalan.
+=item * C<< ro-es >> -- Romanian into Spanish
 
-=item * C<< ca-fr >>
+=item * C<< es-en >> -- Spanish into English
 
-Catalan into French.
+=item * C<< en-es >> -- English into Spanish
 
-=item * C<< en-ca >>
+=item * C<< cy-en >> -- Welsh into English
 
-English into Catalan.
+=item * C<< eu-es >> -- Basque into Spanish
 
-=item * C<< ca-en >>
+=item * C<< en-gl >> -- English into Galician
 
-Catalan into English.
+=item * C<< gl-en >> -- Galician into English
 
 =back
 
@@ -395,18 +451,22 @@ Returns the translation as plain text (default value).
 
 Returns the translation with the unknown words marked with an asterisk.
 
+B<Warning>: This feature is always on in the current version of the Catalan < > French
+language pair due to a bug in the stable package for these languages. It will be
+fixed in the next release.
+
 =back
 
 =item * C<< store_unknown >>
 
 Off by default. If set to a true value, it configures the engine object to store
 in a hash the unknown words and their frequencies during the session.
-You will be able to access this hash later through the get_unknown method.
+You will be able to access this hash later through the B<get_unknown> method.
 If you change the engine language pair in the same session, it will also
 create a separate word list for the new source language.
 
 B<IMPORTANT>: If you activate this setting, then you must also set the 
-B<output> parameter to I<marked_text>. Otherwise, the get_unknown method will
+B<output> parameter to I<marked_text>. Otherwise, the B<get_unknown> method will
 return an empty hash.
 
 =back
@@ -427,9 +487,9 @@ Apertium engine object:
 
 =head2 $engine->translate($string)
 
-Returns the translation of $string generated by Apertium, encoded as utf-8.
-$string must be a string of ANSI text. If the source text isn't encoded as
-Latin-1, you must convert it to that encoding before sending it to the machine
+Returns the translation of $string generated by Apertium, encoded as UTF-8.
+$string must be an UTF-8 encoded string. If the source text isn't encoded as
+UTF-8, you must convert it to that encoding before sending it to the machine
 translation engine. For this task you can use the Encode module or the PerlIO
 layer, if you are reading the text from a file.
 
@@ -461,43 +521,39 @@ a hash containing the unknown words (keys) detected during the current machine
 translation session for the specified source language, along with their
 frequencies (values).
 
-The valid values of $lang_code are (in alphabetical order):
+The valid values of $lang_code for the source language are (in alphabetical order):
 
 =over 8
 
-=item * C<< ca >>
+=item * C<< ca >>  --  Catalan
 
-Source language is Catalan.
+=item * C<< cy >>  --  Welsh
 
-=item * C<< en >>
+=item * C<< en >>  --  English
 
-Source language is English.
+=item * C<< es >>  --  Spanish
 
-=item * C<< es >>
+=item * C<< eu >>  --  Basque
 
-Source language is Spanish.
+=item * C<< fr >>  --  French
 
-=item * C<< fr >>
+=item * C<< gl >>  --  Galician
 
-Source language is French.
+=item * C<< oc >>  --  Occitan
 
-=item * C<< gl >>
+=item * C<< oc_aran >>  --  Aranese
 
-Source language is Galician.
+=item * C<< pt >>  --  Portuguese
 
-=item * C<< oc >>
-
-Source language is Aranese.
-
-=item * C<< pt >>
-
-Source language is Portuguese.
+=item * C<< ro >>  --  Romanian
 
 =back
 
 =head1 DEPENDENCIES
 
 LWP::UserAgent
+
+URI::Escape
 
 =head1 SEE ALSO
 
@@ -515,6 +571,8 @@ Many thanks to Mikel Forcada Zubizarreta, coordinator of the Transducens
 research team of the Department of Software and Computing Systems at the
 University of Alicante, who kindly answered my questions during the development
 of this module, and to Xavier Noria and João Albuquerque for useful suggestions.
+The author is also grateful to Francis Tyers, a member of the Apertium team,
+who provided essential feedback for the latest versions of this module.
 
 
 =head1 AUTHOR
@@ -524,7 +582,7 @@ Enrique Nell, E<lt>perl_nell@telefonica.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2007 by Enrique Nell.
+Copyright (C) 2007-2008 by Enrique Nell, all rights reserved.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

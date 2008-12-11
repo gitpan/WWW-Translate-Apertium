@@ -1,5 +1,14 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.06  December 11, 2008
+    
+    * Version 0.05 was affected by a URL change of the Apertium machine translation
+      test drive a few months ago. Version 0.06 fixes that and adds support for
+      new language pairs available in Apertium 3.0.
+    * The module now uses the Apertium web service.
+    * Updated the documentation.
+    * Added more tests.
+    
 0.05  September 30, 2007
     
     * Minor code and POD fixes and improvements.
