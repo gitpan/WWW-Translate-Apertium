@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               WWW-Translate-Apertium
-version:            0.06
+version:            0.07
 abstract:           Open source machine translation
 author:
     - Enrique Nell <perl_nell@telefonica.net>
