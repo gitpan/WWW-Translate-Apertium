@@ -1,5 +1,10 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.09  December 14, 2008
+
+    * Fixed a couple of details in the interpertium.pl sample.
+    * More documentation changes.
+
 0.08  December 13, 2008
 
     * Added a code sample to the examples folder of the distribution.

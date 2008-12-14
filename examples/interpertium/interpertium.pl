@@ -16,13 +16,16 @@ $|++;
 #                                                                #
 # Usage: perl interpertium.pl <lang_pair> <file_path>            #
 #                                                                #
-# Output: diff.htm, in the same folder than contains this script #
+# <lang_pair> must be es-ca or ca-es                             #
+#                                                                #
+# Output: diff.htm, in the same folder that contains this script #
 #                                                                #
 ##################################################################
 
-my ($pair, $txt_path) = @ARGV;
 
 die "Usage: perl interpertium.pl <lang_pair> <file_path>\n" if @ARGV != 2;
+
+my ($pair, $txt_path) = @ARGV;
 
 die "<lang_pair> must be es-ca or ca-es\n" if $pair !~ /es-ca|ca-es/;
 
@@ -76,20 +79,26 @@ while (<$file>) {
             
             say $out "<span style='color:blue'><b>interNOSTRUM:</b></span></br>\n" .
                      "$inter_trans</br>";
+                     
             say $out "<span style='color:red'><b>Apertium:</b></span></br>\n" .
                      "$apert_trans</br>";
+                     
             say $out "<span style='color:blueviolet'><b>interNOSTRUM to " .
                      "Apertium:</b></span></br>";
+                     
             say $out $diff;
             
         } else {
+            
             say $out "<span style='color:blue'><b>interNOSTRUM</b></span> " .
                      "<b>and</b></n> " .
                      "<span style='color:red'><b>Apertium</b></span>" .
                      "<b>:</b></br>\n"  .
                      "$apert_trans</br>";
+                     
             say $out "<span style='color:darkorange'><b>No differences.</b> ".
                      "</span></br>";
+                     
         }
         
         say $out "</br></br>";

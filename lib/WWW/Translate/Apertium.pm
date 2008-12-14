@@ -8,7 +8,7 @@ use URI::Escape;
 use Encode;
 
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 
 my %lang_pairs = (
@@ -250,7 +250,7 @@ WWW::Translate::Apertium - Open source machine translation
 
 =head1 VERSION
 
-Version 0.08 December 13, 2008
+Version 0.09 December 14, 2008
 
 
 =head1 SYNOPSIS
@@ -294,7 +294,7 @@ to translate between related languages (and less related languages). It is being
 developed by the Department of Software and Computing Systems at the University
 of Alicante. The linguistic data is being developed by research teams from the
 University of Alicante, the University of Vigo and the Pompeu Fabra University.
-For more details, see L<http://apertium.sourceforge.net/>.
+For more details, see L<http://www.apertium.org/>.
 
 WWW::Translate::Apertium provides an object oriented interface to the Apertium
 online machine translation web service, based on Apertium 3.0.
@@ -353,7 +353,7 @@ B<NOTE>: The underlying translation retrieval method changed in version 0.06.
 The current module is based on the Apertium web service, which serves the
 translations faster than the previous web scraping approach.
 
-Summary of changes since 0.05 that may have an impact on legacy code:
+Summary of changes since version 0.05 that may have an impact on legacy code:
 
 - This module expects UTF-8 text and returns UTF-8 text. You can also send
 text encoded in Latin-1, but the support for Latin-1 will be phased out soon.
@@ -573,9 +573,9 @@ Apertium project website:
 
 L<http://www.apertium.org/>
 
-If you want to get I<the real thing> and install the Apertium software on your
-local machine, you can download the Apertium code and build it on your system.
-You will find detailed setup instructions in the Apertium wiki:
+If you want to get I<the real thing>, you can download the Apertium code and
+build it on your local machine. You will find detailed setup instructions in
+the Apertium wiki:
 
 L<http://wiki.apertium.org/wiki/Installation>
 
