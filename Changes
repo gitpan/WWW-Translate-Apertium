@@ -1,5 +1,16 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.10  April 11, 2009
+
+    * A few weeks ago, the Apertium developers changed the I/O format of the
+      web service from TXT to HTML. This update includes another dependency,
+      HTML::Entities, to turn the resulting HTML entities into the actual
+      extended characters.
+    * Added support for new language pairs:
+      Occitan < > Spanish, English > Esperanto, Portuguese < > Catalan,
+      Portuguese < > Galician.
+    * Improved the documentation.
+
 0.09  December 14, 2008
 
     * Fixed a couple of details in the interpertium.pl sample.

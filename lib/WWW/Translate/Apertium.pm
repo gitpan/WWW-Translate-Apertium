@@ -5,10 +5,11 @@ use warnings;
 use Carp qw(carp);
 use LWP::UserAgent;
 use URI::Escape;
+use HTML::Entities;
 use Encode;
 
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 
 my %lang_pairs = (
@@ -18,9 +19,15 @@ my %lang_pairs = (
                     'gl-es'      => 'Galician -> Spanish',
                     'es-pt'      => 'Spanish -> Portuguese',
                     'pt-es'      => 'Portuguese -> Spanish',
+                    'ca-pt'      => 'Catalan -> Portuguese',
+                    'pt-ca'      => 'Portuguese -> Catalan',
+                    'gl-pt'      => 'Galician -> Portuguese',
+                    'pt-gl'      => 'Portuguese -> Galician',
                     'es-pt_BR'   => 'Spanish -> Brazilian Portuguese',
                     'oc-ca'      => 'Occitan -> Catalan',
                     'ca-oc'      => 'Catalan -> Occitan',
+                    'oc-es'      => 'Occitan -> Spanish',
+                    'es-oc'      => 'Spanish -> Occitan',
                     'oc_aran-ca' => 'Aranese -> Catalan',
                     'ca-oc_aran' => 'Catalan -> Aranese',
                     'en-ca'      => 'English -> Catalan',
@@ -31,6 +38,7 @@ my %lang_pairs = (
                     'es-fr'      => 'Spanish -> French',
                     'ca-eo'      => 'Catalan -> Esperanto',
                     'es-eo'      => 'Spanish -> Esperanto',
+                    'en-eo'      => 'English -> Esperanto',
                     'ro-es'      => 'Romanian -> Spanish',
                     'es-en'      => 'Spanish -> English',
                     'en-es'      => 'English -> Spanish',
@@ -140,6 +148,7 @@ sub translate {
     my $translated = _fix_translated($response->{'_content'});
     
     $translated = decode_utf8($translated);
+    $translated = decode_entities($translated);
     
     if ($self->{output} eq 'marked_text') {
         
@@ -237,9 +246,6 @@ sub _fix_translated {
 
 1;
 
-
-1;
-
 __END__
 
 
@@ -250,7 +256,7 @@ WWW::Translate::Apertium - Open source machine translation
 
 =head1 VERSION
 
-Version 0.09 December 14, 2008
+Version 0.10 April 11, 2009
 
 
 =head1 SYNOPSIS
@@ -305,27 +311,31 @@ Currently, Apertium supports the following language pairs:
 
 =over 4
 
-=item * Spanish  < >  Catalan
-
-=item * Spanish  < >  Galician
-
-=item * Galician < >  Spanish
-
-=item * Spanish  < >  Portuguese
-
-=item * Occitan  < >  Catalan
-
 =item * Aranese  < >  Catalan
 
-=item * English  < >  Catalan
+=item * Catalan < >  English
 
-=item * French   < >  Catalan
+=item * Catalan < >  French
+
+=item * Catalan < >  Occitan
+
+=item * Catalan < > Portuguese
+
+=item * Catalan < >  Spanish
 
 =item * French   < >  Spanish
 
-=item * Spanish  < >  English
+=item * English < >  Galician
 
-=item * English  < >  Galician
+=item * English < >  Spanish
+
+=item * Galician < > Portuguese
+
+=item * Galician < >  Spanish
+
+=item * Occitan < > Spanish
+
+=item * Portuguese < > Spanish
 
 =back
 
@@ -334,17 +344,19 @@ Currently, Apertium supports the following language pairs:
 
 =over 4
 
-=item * Spanish   >   Brazilian Portuguese
+=item * Basque    >   Spanish
 
 =item * Catalan   >   Esperanto
 
-=item * Spanish   >   Esperanto
+=item * English   >   Esperanto
 
 =item * Romanian  >   Spanish
 
-=item * Welsh     >   English
+=item * Spanish   >   Brazilian Portuguese
 
-=item * Basque    >   Spanish
+=item * Spanish   >   Esperanto
+
+=item * Welsh     >   English
 
 =back
 
@@ -378,61 +390,131 @@ WWW::Translate::Apertium recognizes the following parameters:
 
 =item * C<< lang_pair >>
 
-The valid values of this parameter are:
+You can find below the valid values of this parameter, classified by source language:
+
+B<Aranese> into:
 
 =over 8
 
-=item * C<< es-ca >> -- Spanish into Catalan
+=item * B<Catalan> -- C<< oc_aran-ca >>
 
-=item * C<< ca-es >> -- Catalan into Spanish
+=back
 
-=item * C<< es-gl >> -- Spanish into Galician
+B<Basque> into:
 
-=item * C<< gl-es >> -- Galician into Spanish
+=over 8
 
-=item * C<< es-pt >> -- Spanish into Portuguese
+=item * B<Spanish> -- C<< eu-es >>
 
-=item * C<< pt-es >> -- Portuguese into Spanish
+=back
 
-=item * C<< es-pt_BR >> -- Spanish into Brazilian Portuguese
+B<Catalan> into:
 
-=item * C<< oc-ca >> -- Occitan into Catalan
+=over 8
 
-=item * C<< ca-oc >> -- Catalan into Occitan
+=item * B<Aranese> -- C<< ca-oc_aran >>
 
-=item * C<< oc_aran-ca >> -- Aranese into Catalan
+=item * B<English> -- C<< ca-en >>
 
-=item * C<< ca-oc_aran >> -- Catalan into Aranese
+=item * B<Esperanto> -- C<< ca-eo >>
 
-=item * C<< en-ca >> -- English into Catalan
+=item * B<French> -- C<< ca-fr >>
 
-=item * C<< ca-en >> -- Catalan into English
+=item * B<Occitan> -- C<< ca-oc >>
 
-=item * C<< fr-ca >> -- French into Catalan
+=item * B<Spanish> -- C<< ca-es >>
 
-=item * C<< ca-fr >> -- Catalan into French
+=back
 
-=item * C<< fr-es >> -- French into Spanish
+B<French> into:
 
-=item * C<< es-fr >> -- Spanish into French
+=over 8
 
-=item * C<< ca-eo >> -- Catalan into Esperanto
+=item * B<Catalan> -- C<< fr-ca >>
 
-=item * C<< es-eo >> -- Spanish into Esperanto
+=item * B<Spanish> -- C<< fr-es >>
 
-=item * C<< ro-es >> -- Romanian into Spanish
+=back
 
-=item * C<< es-en >> -- Spanish into English
+B<English> into:
 
-=item * C<< en-es >> -- English into Spanish
+=over 8
 
-=item * C<< cy-en >> -- Welsh into English
+=item * B<Catalan> -- C<< en-ca >>
 
-=item * C<< eu-es >> -- Basque into Spanish
+=item * B<Esperanto> -- C<< en-eo >>
 
-=item * C<< en-gl >> -- English into Galician
+=item * B<Galician> -- C<< en-gl >>
 
-=item * C<< gl-en >> -- Galician into English
+=item * B<Spanish> -- C<< en-es >>
+
+=back
+
+B<Galician> into:
+
+=over 8
+
+=item * B<English> -- C<< gl-en >>
+
+=item * B<Spanish> -- C<< gl-es >>
+
+=back
+
+B<Occitan> into:
+
+=over 8
+
+=item * B<Catalan> -- C<< oc-ca >>
+
+=item * B<Spanish> -- C<< oc-es >>
+
+=back
+
+B<Portuguese> into:
+
+=over 8
+
+=item * B<Catalan> -- C<< pt-ca >>
+
+=item * B<Galician> -- C<< pt-gl >>
+
+=item * B<Spanish> -- C<< pt-es >>
+
+=back
+
+B<Romanian> into:
+
+=over 8
+
+=item * B<Spanish> -- C<< ro-es >>
+
+=back
+
+B<Spanish> into:
+
+=over 8
+
+=item * B<Brazilian Portuguese> -- C<< es-pt_BR >>
+
+=item * B<Catalan> -- C<< es-ca >>
+
+=item * B<English> -- C<< es-en >>
+
+=item * B<Esperanto> -- C<< es-eo >>
+
+=item * B<French> -- C<< es-fr >>
+
+=item * B<Galician> -- C<< es-gl >>
+
+=item * B<Portuguese> -- C<< es-pt >>
+
+=back
+
+B<Welsh> into:
+
+=over 8
+
+=item * B<English> -- C<< cy-en >>
 
 =back
 
@@ -563,6 +645,8 @@ LWP::UserAgent
 
 URI::Escape
 
+HTML::Entities
+
 =head1 SEE ALSO
 
 WWW::Translate::interNOSTRUM
@@ -596,7 +680,7 @@ Enrique Nell, E<lt>perl_nell@telefonica.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2007-2008 by Enrique Nell, all rights reserved.
+Copyright (C) 2007-2009 by Enrique Nell, all rights reserved.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

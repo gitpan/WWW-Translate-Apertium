@@ -7,6 +7,7 @@ WriteMakefile(
     PREREQ_PM         => {
                           'LWP::UserAgent' => 0,
                           'URI::Escape'    => 1.36,
+                          'HTML::Entities' => 3.58,
                          },
     LICENSE           => 'perl',
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005

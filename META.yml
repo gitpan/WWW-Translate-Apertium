@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               WWW-Translate-Apertium
-version:            0.09
+version:            0.10
 abstract:           Open source machine translation
 author:
     - Enrique Nell <perl_nell@telefonica.net>
@@ -9,6 +9,7 @@ distribution_type:  module
 configure_requires:
     ExtUtils::MakeMaker:  0
 requires:
+    HTML::Entities:  3.58
     LWP::UserAgent:  0
     URI::Escape:     1.36
 no_index:
