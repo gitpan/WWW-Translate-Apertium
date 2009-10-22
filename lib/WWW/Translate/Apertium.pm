@@ -9,7 +9,7 @@ use HTML::Entities;
 use Encode;
 
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 
 my %lang_pairs = (
@@ -260,7 +260,7 @@ WWW::Translate::Apertium - Open source machine translation
 
 =head1 VERSION
 
-Version 0.11 October 22, 2009
+Version 0.12 October 22, 2009
 
 
 =head1 SYNOPSIS

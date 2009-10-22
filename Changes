@@ -1,5 +1,10 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.12  October 22, 2009
+
+    * Resubmitted the module after increasing the version number.
+      Distribution v.011 contained word writable files and directories... 
+
 0.11  October 22, 2009
 
     * Added new language pairs:
