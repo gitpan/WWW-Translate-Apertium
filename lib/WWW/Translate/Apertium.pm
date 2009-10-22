@@ -9,44 +9,48 @@ use HTML::Entities;
 use Encode;
 
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 
 my %lang_pairs = (
-                    'es-ca'      => 'Spanish -> Catalan', # Default
-                    'ca-es'      => 'Catalan -> Spanish',
-                    'es-gl'      => 'Spanish -> Galician',
-                    'gl-es'      => 'Galician -> Spanish',
-                    'es-pt'      => 'Spanish -> Portuguese',
-                    'pt-es'      => 'Portuguese -> Spanish',
-                    'ca-pt'      => 'Catalan -> Portuguese',
-                    'pt-ca'      => 'Portuguese -> Catalan',
-                    'gl-pt'      => 'Galician -> Portuguese',
-                    'pt-gl'      => 'Portuguese -> Galician',
-                    'es-pt_BR'   => 'Spanish -> Brazilian Portuguese',
-                    'oc-ca'      => 'Occitan -> Catalan',
-                    'ca-oc'      => 'Catalan -> Occitan',
-                    'oc-es'      => 'Occitan -> Spanish',
-                    'es-oc'      => 'Spanish -> Occitan',
-                    'oc_aran-ca' => 'Aranese -> Catalan',
-                    'ca-oc_aran' => 'Catalan -> Aranese',
-                    'en-ca'      => 'English -> Catalan',
-                    'ca-en'      => 'Catalan -> English',
-                    'fr-ca'      => 'French -> Catalan',
-                    'ca-fr'      => 'Catalan -> French',
-                    'fr-es'      => 'French -> Spanish',
-                    'es-fr'      => 'Spanish -> French',
-                    'ca-eo'      => 'Catalan -> Esperanto',
-                    'es-eo'      => 'Spanish -> Esperanto',
-                    'en-eo'      => 'English -> Esperanto',
-                    'ro-es'      => 'Romanian -> Spanish',
-                    'es-en'      => 'Spanish -> English',
-                    'en-es'      => 'English -> Spanish',
-                    'cy-en'      => 'Welsh -> English',
-                    'eu-es'      => 'Basque -> Spanish',
-                    'en-gl'      => 'English -> Galician',
-                    'gl-en'      => 'Galician -> English',
-                    
+                    'es-ca'          => 'Spanish -> Catalan', # Default
+                    'ca-es'          => 'Catalan -> Spanish',
+                    'es-gl'          => 'Spanish -> Galician',
+                    'gl-es'          => 'Galician -> Spanish',
+                    'es-pt'          => 'Spanish -> Portuguese',
+                    'pt-es'          => 'Portuguese -> Spanish',
+                    'ca-pt'          => 'Catalan -> Portuguese',
+                    'pt-ca'          => 'Portuguese -> Catalan',
+                    'gl-pt'          => 'Galician -> Portuguese',
+                    'pt-gl'          => 'Portuguese -> Galician',
+                    'es-pt_BR'       => 'Spanish -> Brazilian Portuguese',
+                    'oc-ca'          => 'Occitan -> Catalan',
+                    'ca-oc'          => 'Catalan -> Occitan',
+                    'oc-es'          => 'Occitan -> Spanish',
+                    'es-oc'          => 'Spanish -> Occitan',
+                    'oc_aran-ca'     => 'Aranese -> Catalan',
+                    'ca-oc_aran'     => 'Catalan -> Aranese',
+                    'en-ca'          => 'English -> Catalan',
+                    'ca-en'          => 'Catalan -> English',
+                    'fr-ca'          => 'French -> Catalan',
+                    'ca-fr'          => 'Catalan -> French',
+                    'fr-es'          => 'French -> Spanish',
+                    'es-fr'          => 'Spanish -> French',
+                    'ca-eo'          => 'Catalan -> Esperanto',
+                    'es-eo'          => 'Spanish -> Esperanto',
+                    'en-eo'          => 'English -> Esperanto',
+                    'eo-en'          => 'Esperanto -> English',
+                    'ro-es'          => 'Romanian -> Spanish',
+                    'es-en'          => 'Spanish -> English',
+                    'en-es'          => 'English -> Spanish',
+                    'cy-en'          => 'Welsh -> English',
+                    'eu-es'          => 'Basque -> Spanish',
+                    'en-gl'          => 'English -> Galician',
+                    'gl-en'          => 'Galician -> English',
+                    'br-fr'          => 'Breton -> French',
+                    'nb-nn'          => 'Norwegian Bokmål -> Norwegian Nynorsk',
+                    'nn-nb'          => 'Norwegian Nynorsk -> Norwegian Bokmål',
+                    'sv-da'          => 'Swedish-Danish',
                  );
 
 my %output =     (
@@ -200,7 +204,7 @@ sub get_unknown {
     
     if (@_ && $self->{store_unknown}) {
         my $lang_code = shift;
-        if ($lang_code =~ /^(?:ca|cy|en|es|eu|fr|gl|oc|oc_aran|pt|ro)$/) {
+        if ($lang_code =~ /^(?:br|ca|cy|en|eo|es|eu|fr|gl|nb|nn|oc|oc_aran|pt|ro|sv)$/) {
             return $self->{unknown}->{$lang_code};
         } else {
             carp "Invalid language code\n";
@@ -256,7 +260,7 @@ WWW::Translate::Apertium - Open source machine translation
 
 =head1 VERSION
 
-Version 0.10 April 11, 2009
+Version 0.11 October 22, 2009
 
 
 =head1 SYNOPSIS
@@ -311,31 +315,36 @@ Currently, Apertium supports the following language pairs:
 
 =over 4
 
-=item * Aranese  < >  Catalan
+=item * Aranese < > Catalan
 
-=item * Catalan < >  English
+=item * Catalan < > English
 
-=item * Catalan < >  French
+=item * Catalan < > French
 
-=item * Catalan < >  Occitan
+=item * Catalan < > Occitan
 
 =item * Catalan < > Portuguese
 
-=item * Catalan < >  Spanish
+=item * Catalan < > Spanish
 
-=item * French   < >  Spanish
+=item * French < > Spanish
 
-=item * English < >  Galician
+=item * English < > Galician
 
-=item * English < >  Spanish
+=item * English < > Spanish
+
+=item * English < > Esperanto
 
 =item * Galician < > Portuguese
 
-=item * Galician < >  Spanish
+=item * Galician < > Spanish
+
+=item * Norwegian Bokmål < > Norwegian Nynorsk
 
 =item * Occitan < > Spanish
 
 =item * Portuguese < > Spanish
+
 
 =back
 
@@ -346,15 +355,19 @@ Currently, Apertium supports the following language pairs:
 
 =item * Basque    >   Spanish
 
-=item * Catalan   >   Esperanto
+=item * Breton    >   French
 
-=item * English   >   Esperanto
+=item * Catalan   >   Esperanto
 
 =item * Romanian  >   Spanish
 
 =item * Spanish   >   Brazilian Portuguese
 
+=item * Spanish   >   Catalan (Valencian)
+
 =item * Spanish   >   Esperanto
+
+=item * Swedish   >   Danish
 
 =item * Welsh     >   English
 
@@ -408,6 +421,14 @@ B<Basque> into:
 
 =back
 
+B<Breton> into:
+
+=over 8
+
+=item * B<French> --C<< br-fr >>
+
+=back
+
 B<Catalan> into:
 
 =over 8
@@ -426,16 +447,6 @@ B<Catalan> into:
 
 =back
 
-B<French> into:
-
-=over 8
-
-=item * B<Catalan> -- C<< fr-ca >>
-
-=item * B<Spanish> -- C<< fr-es >>
-
-=back
-
 B<English> into:
 
 =over 8
@@ -450,6 +461,24 @@ B<English> into:
 
 =back
 
+B<Esperanto> into:
+
+=over 8
+
+=item * B<English> -- C<< eo-en >>
+
+=back
+
+B<French> into:
+
+=over 8
+
+=item * B<Catalan> -- C<< fr-ca >>
+
+=item * B<Spanish> -- C<< fr-es >>
+
+=back
+
 B<Galician> into:
 
 =over 8
@@ -457,6 +486,22 @@ B<Galician> into:
 =item * B<English> -- C<< gl-en >>
 
 =item * B<Spanish> -- C<< gl-es >>
+
+=back
+
+B<Norwegian Bokmål> into:
+
+=over 8
+
+=item * B<Norwegian Nynorsk> -- C<< nb-nn >>
+
+=back
+
+B<Norwegian Nynorsk> into:
+
+=over 8
+
+=item * B<Norwegian Bokmål> -- C<< nn-nb >>
 
 =back
 
@@ -507,6 +552,14 @@ B<Spanish> into:
 =item * B<Galician> -- C<< es-gl >>
 
 =item * B<Portuguese> -- C<< es-pt >>
+
+=back
+
+B<Swedish> into:
+
+=over 8
+
+=item * B<Danish> -- C<< sv-da >>
 
 =back
 
@@ -615,11 +668,15 @@ The valid values of $lang_code for the source language are (in alphabetical orde
 
 =over 8
 
+=item * C<< br >>  --  Breton
+
 =item * C<< ca >>  --  Catalan
 
 =item * C<< cy >>  --  Welsh
 
 =item * C<< en >>  --  English
+
+=item * C<< eo >>  --  Esperanto
 
 =item * C<< es >>  --  Spanish
 
@@ -629,6 +686,10 @@ The valid values of $lang_code for the source language are (in alphabetical orde
 
 =item * C<< gl >>  --  Galician
 
+=item * C<< nb >>  --  Norwegian Bokmål
+
+=item * C<< nn >>  --  Norwegian Nynorsk
+
 =item * C<< oc >>  --  Occitan
 
 =item * C<< oc_aran >>  --  Aranese
@@ -636,6 +697,8 @@ The valid values of $lang_code for the source language are (in alphabetical orde
 =item * C<< pt >>  --  Portuguese
 
 =item * C<< ro >>  --  Romanian
+
+=item * C<< sv >>  --  Swedish
 
 =back
 
@@ -668,8 +731,9 @@ L<http://wiki.apertium.org/wiki/Installation>
 Many thanks to Mikel Forcada Zubizarreta, coordinator of the Transducens
 research team of the Department of Software and Computing Systems at the
 University of Alicante, who kindly answered my questions during the development
-of this module, and to Xavier Noria and João Albuquerque for useful suggestions.
-The author is also grateful to Francis Tyers, a member of the Apertium team,
+of this module, and to Xavier Noria, João Albuquerque, and Kevin Brubeck Unhammer
+for useful suggestions.
+The author is also grateful to Francis Tyers, a member of the Apertium team
 who provided essential feedback for the latest versions of this module.
 
 

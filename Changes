@@ -1,5 +1,16 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.11  October 22, 2009
+
+    * Added new language pairs:
+	Norwegian Bokmål -> Norwegian Nynorsk
+	Norwegian Nynorsk -> Norwegian Bokmål
+	Swedish -> Danish
+	Esperanto -> English
+	Breton -> French
+    * Updated the documentation.
+	
+
 0.10  April 11, 2009
 
     * A few weeks ago, the Apertium developers changed the I/O format of the
