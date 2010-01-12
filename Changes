@@ -1,5 +1,12 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.13  January 12, 2010
+
+    * Added a warning to the documentation to inform potential users of
+      the temporary whitelist-based access system implemented by
+      the Apertium team on their web service, and the steps required
+      to have their IPs included in the whitelist.
+
 0.12  October 22, 2009
 
     * Resubmitted the module after increasing the version number.
@@ -8,13 +15,13 @@ Revision history for Perl extension WWW::Translate::Apertium
 0.11  October 22, 2009
 
     * Added new language pairs:
-	Norwegian Bokmål -> Norwegian Nynorsk
-	Norwegian Nynorsk -> Norwegian Bokmål
-	Swedish -> Danish
-	Esperanto -> English
-	Breton -> French
+        Norwegian Bokmål -> Norwegian Nynorsk
+        Norwegian Nynorsk -> Norwegian Bokmål
+        Swedish -> Danish
+        Esperanto -> English
+        Breton -> French
     * Updated the documentation.
-	
+    
 
 0.10  April 11, 2009
 
@@ -77,6 +84,6 @@ Revision history for Perl extension WWW::Translate::Apertium
     * Added the get_pairs() method and updated the documentation
 
 0.01  March 26, 2007
-	
+    
     * First version, based on WWW::Translate::interNOSTRUM
 

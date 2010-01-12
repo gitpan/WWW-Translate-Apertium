@@ -9,7 +9,7 @@ use HTML::Entities;
 use Encode;
 
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 
 my %lang_pairs = (
@@ -260,7 +260,7 @@ WWW::Translate::Apertium - Open source machine translation
 
 =head1 VERSION
 
-Version 0.12 October 22, 2009
+Version 0.13 January 12, 2010
 
 
 =head1 SYNOPSIS
@@ -374,9 +374,13 @@ Currently, Apertium supports the following language pairs:
 =back
 
 
-B<NOTE>: The underlying translation retrieval method changed in version 0.06.
-The current module is based on the Apertium web service, which serves the
-translations faster than the previous web scraping approach.
+B<WARNING>: Recently, the Apertium team implemented a temporary whitelist-based access system
+on their web service to prevent the use of the service to translate spam. 
+They are working to improve the web service and expect to restore normal access within 1-2 months.
+In the meantime, to use this module you must write a message to the Apertium list
+(L<https://lists.sourceforge.net/lists/listinfo/apertium-stuff>) expressing your desire to use
+the web service and someone will contact you privately to get your IP.
+Otherwise, you will get a Service Unavailable message.
 
 Summary of changes since version 0.05 that may have an impact on legacy code:
 
@@ -744,7 +748,7 @@ Enrique Nell, E<lt>perl_nell@telefonica.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2007-2009 by Enrique Nell, all rights reserved.
+Copyright (C) 2007-2010 by Enrique Nell, all rights reserved.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
