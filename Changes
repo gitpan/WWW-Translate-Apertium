@@ -1,5 +1,17 @@
 Revision history for Perl extension WWW::Translate::Apertium
 
+0.14  February 13, 2010
+
+    * The web service whitelist restriction no longer applies to this module.
+    * Added a new single-direction pair: Spanish -> Asturian.
+    * Updated the documentation.
+    * Changed the contact e-mail address.
+    * Added the BUGS and SUPPORT boilerplate sections.
+    * Updated the license text.
+    * Fixed file permissions bug.
+    * Changed file EOL to Unix.
+
+
 0.13  January 12, 2010
 
     * Added a warning to the documentation to inform potential users of

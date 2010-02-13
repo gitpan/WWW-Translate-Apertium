@@ -9,7 +9,7 @@ use HTML::Entities;
 use Encode;
 
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 
 my %lang_pairs = (
@@ -51,16 +51,17 @@ my %lang_pairs = (
                     'nb-nn'          => 'Norwegian Bokmål -> Norwegian Nynorsk',
                     'nn-nb'          => 'Norwegian Nynorsk -> Norwegian Bokmål',
                     'sv-da'          => 'Swedish-Danish',
+                    'es-ast'         => 'Spanish-Asturian',
                  );
 
 my %output =     (
-                    plain_text => 'txtf',  # default
+                    plain_text  => 'txtf',  # default
                     marked_text => 'txt',
                  );
 
 my %defaults =   (
-                    lang_pair => 'ca-es',
-                    output => 'plain_text',
+                    lang_pair     => 'ca-es',
+                    output        => 'plain_text',
                     store_unknown => 0,
                  );
 
@@ -97,9 +98,11 @@ sub new {
         $this{unknown} = ();
     }
     
-    $this{agent} = LWP::UserAgent->new();
+    
+    $this{agent} = LWP::UserAgent->new( agent => 'apertium2perl' );
     $this{agent}->env_proxy();
     $this{url} = 'http://xixona.dlsi.ua.es/webservice/ws.php';
+    
     
     return bless(\%this, $class);
 }
@@ -136,6 +139,7 @@ sub translate {
     }
     
     my $response = $browser->get($url);
+    
     
     unless ($response->is_success) {
         carp $response->status_line;
@@ -260,7 +264,7 @@ WWW::Translate::Apertium - Open source machine translation
 
 =head1 VERSION
 
-Version 0.13 January 12, 2010
+Version 0.14 February 13, 2010
 
 
 =head1 SYNOPSIS
@@ -308,6 +312,10 @@ For more details, see L<http://www.apertium.org/>.
 
 WWW::Translate::Apertium provides an object oriented interface to the Apertium
 online machine translation web service, based on Apertium 3.0.
+
+
+B<NOTE>: The whitelist-based access restriction no longer applies to this module.
+
 
 Currently, Apertium supports the following language pairs:
 
@@ -361,6 +369,8 @@ Currently, Apertium supports the following language pairs:
 
 =item * Romanian  >   Spanish
 
+=item * Spanish   >   Asturian
+
 =item * Spanish   >   Brazilian Portuguese
 
 =item * Spanish   >   Catalan (Valencian)
@@ -372,24 +382,6 @@ Currently, Apertium supports the following language pairs:
 =item * Welsh     >   English
 
 =back
-
-
-B<WARNING>: Recently, the Apertium team implemented a temporary whitelist-based access system
-on their web service to prevent the use of the service to translate spam. 
-They are working to improve the web service and expect to restore normal access within 1-2 months.
-In the meantime, to use this module you must write a message to the Apertium list
-(L<https://lists.sourceforge.net/lists/listinfo/apertium-stuff>) expressing your desire to use
-the web service and someone will contact you privately to get your IP.
-Otherwise, you will get a Service Unavailable message.
-
-Summary of changes since version 0.05 that may have an impact on legacy code:
-
-- This module expects UTF-8 text and returns UTF-8 text. You can also send
-text encoded in Latin-1, but the support for Latin-1 will be phased out soon.
-
-- Some language codes have changed: The code for Brazilian Portuguese
-is now B<pt_BR> and the code for Aranese is B<oc_aran> (used to be B<oc>, which
-is now the language code for Occitan).
 
 
 
@@ -542,6 +534,8 @@ B<Romanian> into:
 B<Spanish> into:
 
 =over 8
+
+=item * B<Asturian> -- C<< es-ast >>
 
 =item * B<Brazilian Portuguese> -- C<< es-pt_BR >>
 
@@ -743,15 +737,55 @@ who provided essential feedback for the latest versions of this module.
 
 =head1 AUTHOR
 
-Enrique Nell, E<lt>perl_nell@telefonica.netE<gt>
+Enrique Nell, C<< <blas.gordon at gmail.com> >>
+
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<bug-www-translate-apertium at rt.cpan.org>,
+or through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=WWW-Translate-Apertium>.
+I will be notified, and then you'll automatically be notified of progress on your bug as I make changes.
+
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc WWW::Translate::Apertium
+
+
+You can also look for information at:
+
+=over 4
+
+=item * RT: CPAN's request tracker
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=WWW-Translate-Apertium>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/WWW-Translate-Apertium>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/WWW-Translate-Apertium>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/WWW-Translate-Apertium/>
+
+=back
 
 
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2007-2010 by Enrique Nell, all rights reserved.
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
 
 
 =cut
